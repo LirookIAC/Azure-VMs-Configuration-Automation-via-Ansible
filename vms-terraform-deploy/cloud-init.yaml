@@ -1,0 +1,43 @@
+#cloud-config
+users:
+  - name: ansible-user
+    # Adding 'wheel' for SUSE/RHEL and 'sudo' for Ubuntu compatibility
+    groups: sudo, wheel
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS3FxYh/zbvIkcYqSU711wDHs2imgD3Gp19y4pBHyV/YLHjPVT0qqoAGcniXwl1GdRF+zepNhxIwhul4Hy/lnE3kyt8nZ6MX4OzLRFLMBD5pLKMBWJsE7okvwvgOMS7BDi7KANdtG4z1uSUu/4dKFW7o4M2VVqC866YwR7xi5L7oPo22mlhQa0vtLIu7K8cCtAn+f1fzG1u3Vj2ZBzYAH794PE5if6rHDQf2lnieE/ql0nDE3JCo6Q6hfUCzKhH8qwtYK9Vnys/Yd6gjnKttnOMudZl0VIyC6AiSaRyqnhXU2BJ4ReTadgwsXC/8VbBr76aTKkhhEgFBxEz4Ead3wxAMsGe6snDXm3NlxzjtruG5HOxB4t+l+Ysl15yrnV2+qEQV9a+44Xb/+H6VKyUup2hIhvpfdOYgynhoV4EDcTIjxBzjG5E/wT0xR9Le/dzDgiHYjEakSoTtDOsWChaNI+y50LHIZdMzc0NKXuSSDGm46xZ9xNW23yPnyOmrdzLgU= student@rhel011
+
+write_files:
+  - path: /etc/sudoers.d/ansible-user
+    owner: root:root
+    permissions: '0440'
+    content: |
+      ansible-user ALL=(ALL) NOPASSWD:ALL
+
+  - path: /etc/ssh/sshd_config.d/00-force-passwords.conf
+    owner: root:root
+    permissions: '0644'
+    content: |
+      PasswordAuthentication yes
+
+runcmd:
+  - |
+    if grep -qi "suse" /etc/os-release; then
+      # Ensure firewalld is installed on openSUSE
+      zypper install -y firewalld
+      systemctl unmask firewalld
+      systemctl enable --now firewalld
+      firewall-cmd --permanent --add-service=ssh
+      firewall-cmd --reload
+    elif [ -f /etc/redhat-release ]; then
+      # RHEL/Rocky usually has it, but good to be safe
+      dnf install -y firewalld
+      systemctl enable --now firewalld
+      firewall-cmd --permanent --add-service=ssh
+      firewall-cmd --reload
+    elif [ -f /etc/debian_version ]; then
+      ufw allow OpenSSH
+      ufw --force enable
+    fi
+  - systemctl restart sshd

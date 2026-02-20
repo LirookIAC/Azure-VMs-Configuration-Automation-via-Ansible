@@ -1,0 +1,4 @@
+az vm image list --location centralindia --publisher procomputers --all
+
+
+az vm image list --offer SUSE --all --output table
