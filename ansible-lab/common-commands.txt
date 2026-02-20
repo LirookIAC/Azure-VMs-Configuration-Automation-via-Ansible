@@ -1,3 +1,5 @@
+VERIFY SNMP and CLEAR OLD host verification keys
+
 snmpwalk -v3 -l authPriv -u yourv3user \
   -a SHA -A authpassword123 \
   -x AES -X privpassword456 \
