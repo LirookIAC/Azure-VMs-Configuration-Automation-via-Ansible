@@ -14,7 +14,7 @@ Briefly, this configuration deploys a complete, isolated network environment and
   * Rocky Linux 9 (RHEL family)
   * SLES 15 SP5 (SUSE family)
 * **Outputs** the Public and Private IPs of the generated VMs for easy access.
-* * **Cloud-Init** Cloud-init enalbes the firewall depending on the Linux flavour and injects public ssh-keys generated during ansible-setup to ensure the ansible-control node has seamless acccess the moment VMs are provisioned. [Read the Ansible Configuration Documentation](../ansible-lab/README.md) 
+* **Cloud-Init** Cloud-init enalbes the firewall depending on the Linux flavour and injects public ssh-keys generated during ansible-setup to ensure the ansible-control node has seamless acccess the moment VMs are provisioned. [Read the Ansible Configuration Documentation](../ansible-lab/README.md) 
 
 
 ## ⚠️ Important Security Notice (Lab Environment)
