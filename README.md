@@ -51,6 +51,3 @@ This project serves as a practical demonstration of several core Cloud Engineeri
 ## 🚀 Future Enhancements (Roadmap)
 While this repository establishes a solid baseline, the following enhancements are planned to expand its functionality and mirror a true enterprise-grade environment:
 * **Role Expansion:** Developing and integrating dedicated Ansible roles for **Database (DB)** deployment, **Web Server** configuration, and **LVM disk management** to build on top of the existing `common` role.
-* **Enterprise Secrets Management:** Migrating away from Ansible Vault and plaintext configurations to dynamically fetch credentials and SSH keys directly from **Azure Key Vault**.
-* **Remote State Management:** Transitioning the Terraform state from local storage to an **Azure Blob Storage** remote backend to support team collaboration and state locking.
-* **Network Hardening:** Replacing Public IPs with private networking and routing access strictly through Azure Bastion or a VPN Gateway.
