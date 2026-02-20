@@ -1,0 +1,34 @@
+- name: Ip Change for Azure VMs
+  hosts: localhost
+  become: yes
+  vars:
+    servers:
+      ubuntu-vm:
+        IP: "20.198.92.44"
+        name: "ubuntu-vm"  
+      rhel-vm:
+        IP: "20.204.21.10"
+        name: "rhel-vm"
+      suse-vm:
+        IP: "20.198.94.143"
+        name: "suse-vm"
+  tasks:
+    - name: Manage dynamic host entries in /etc/hosts
+      blockinfile:
+        path: /etc/hosts
+        marker: "# {mark} ANSIBLE MANAGED AZURE VMS"
+        block: |
+          {% for key, server in servers.items() %}
+          {{ server.IP }}  {{ server.name }}
+          {% endfor %}
+
+    - name: Manage dynamic host entries in inventory file
+      blockinfile:
+        path: ./inventory
+        create: yes
+        marker: "# {mark} ANSIBLE MANAGED AZURE VMS"
+        block: |
+          [azure_vms]
+          {% for key, server in servers.items() %}
+          {{ server.name }} ansible_host={{ server.IP }}
+          {% endfor %}

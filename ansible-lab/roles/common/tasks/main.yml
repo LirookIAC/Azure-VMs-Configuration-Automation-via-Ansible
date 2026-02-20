@@ -1,0 +1,118 @@
+---
+  - name: Load OS-specific variables
+    ansible.builtin.include_vars:
+      file: "{{ ansible_os_family }}.yml"
+  - name: Set up Custom MOTD
+    template:
+      src: motd.j2
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: '0644'
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+    when: ansible_os_family == 'Debian'
+  - name: Custom bashrc for all users
+    ansible.builtin.lineinfile:
+      path: "{{ bashrc_path }}"
+      line: 'export PS1="\[\e[32m\]\u\[\e[m\]@\[\e[36m\]\h \[\e[33m\]\t\[\e[m\]:\[\e[34m\]\w\[\e[m\]\$ "'
+      state: present
+      regexp: '^export PS1='
+      insertafter: EOF
+  - name: Ensure breakglass user exists
+    ansible.builtin.user:
+      name: azadmin
+      # Generate this hash using: python3 -c 'import crypt; print(crypt.crypt("yourpassword", crypt.mksalt(crypt.SALT_SHA512)))' or mkpasswd -m sha-512 "Password@1234" in RHEL
+      password: "{{ azadmin_password }}" 
+      shell: /bin/bash
+      state: present
+
+  - name: Setup passwordless sudo for breakglass
+    ansible.builtin.copy:
+      content: "azadmin ALL=(ALL) NOPASSWD:ALL"
+      dest: /etc/sudoers.d/azadmin
+      mode: '0440'
+    notify: Restart ssh
+    become: true
+  - name: Allow all access to UDP port 161 for SNMP (Debian)
+    community.general.ufw:
+      rule: allow
+      port: '161'
+      proto: udp
+    when: ansible_os_family == 'Debian'
+  - name: Ensure firewalld is enabled and running (RHEL , SUSE)
+    ansible.builtin.service:
+      name: firewalld
+      state: started
+      enabled: yes
+    when: ansible_os_family == 'RedHat' or ansible_os_family == 'Suse'
+  - name: Allow all access to UDP port 161 for SNMP (RHEL , suse)
+    ansible.posix.firewalld:
+      service: snmp
+      permanent: yes
+      state: enabled
+      immediate: yes
+    when: ansible_os_family == 'RedHat' or ansible_os_family == 'Suse'
+  - name: Ensure snmpd is installed (Generic)
+    ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ snmp_packages }}"
+  - name: Stop snmpd service for configuration changes
+    ansible.builtin.service:
+      name: snmpd
+      state: stopped
+
+  - name: Check if SNMPv3 user already exists for  Debian
+    ansible.builtin.shell: "grep 'yourv3user' /var/lib/snmp/snmpd.conf"
+    register: user_exists_deb
+    ignore_errors: true
+    changed_when: false
+    when: ansible_os_family == 'Debian' 
+
+  - name: Check if SNMPv3 user already exists for Suse and RHEL
+    ansible.builtin.shell: "grep 'yourv3user' /var/lib/net-snmp/snmpd.conf"
+    register: user_exists_suse_rhel
+    ignore_errors: true
+    changed_when: false
+    when: ansible_os_family == 'Suse' or ansible_os_family == 'RedHat'
+
+  - name: Create SNMPv3 user (only if not exists) for Debian
+    ansible.builtin.command:
+      cmd: "{{ snmp_user_create_command }}"
+    when: ansible_os_family == 'Debian' and user_exists_deb.rc != 0
+    notify: Restart snmpd
+    
+  - name: Create SNMPv3 user (only if not exists) for SUSE and RHEL
+    ansible.builtin.command:
+      cmd: "{{ snmp_user_create_command }}"
+    when: (ansible_os_family == 'Suse' or ansible_os_family == 'RedHat') and user_exists_suse_rhel.rc != 0
+    notify: Restart snmpd
+
+  - name: Configure rouser in main config
+    ansible.builtin.lineinfile:
+      path: /etc/snmp/snmpd.conf
+      line: 'rouser yourv3user authPriv'
+      state: present
+    notify: Restart snmpd
+
+  - name: Configure SNMP to listen on all network interfaces
+    ansible.builtin.lineinfile:
+      path: /etc/snmp/snmpd.conf
+      regexp: '^agentaddress'
+      line: 'agentAddress udp:161,udp6:[::1]:161'
+    notify: Restart snmpd
+
+  - name: Remove rwuser
+    ansible.builtin.lineinfile:
+      path: /etc/snmp/snmpd.conf
+      regexp: '^rwuser'
+      state: absent
+    notify: Restart snmpd
+
+  - name: Start and enable snmpd service
+    ansible.builtin.service:
+      name: snmpd
+      state: started
+      enabled: yes

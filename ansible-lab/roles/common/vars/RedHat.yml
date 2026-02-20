@@ -1,0 +1,11 @@
+---
+snmp_service_name: snmpd
+snmp_packages:
+  - net-snmp
+  - net-snmp-utils
+  - bash-completion
+firewall_type: firewalld
+snmp_user_create_command: "net-snmp-create-v3-user -a {{ auth_pass }} -x {{ priv_pass }} -A SHA -X AES yourv3user"
+ssh_service_name: sshd
+
+bashrc_path: /etc/bashrc

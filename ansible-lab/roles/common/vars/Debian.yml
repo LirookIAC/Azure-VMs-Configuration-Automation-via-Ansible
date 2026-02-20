@@ -1,0 +1,17 @@
+system_package_manager: apt
+snmp_packages:
+  - snmpd
+  - libsnmp-dev
+firewall_service: ufw
+ssh_service_name: ssh
+
+bashrc_path: /etc/bash.bashrc
+snmp_user_create_command: "net-snmp-config --create-snmpv3-user -a {{ auth_pass }} -x {{ priv_pass }} -A SHA -X AES yourv3user"
+
+# # Variables for Rocky/CentOS/RHEL
+# system_package_manager: dnf
+# snmp_packages:
+#   - net-snmp
+#   - net-snmp-utils
+#   - net-snmp-devel
+# firewall_service: firewalld

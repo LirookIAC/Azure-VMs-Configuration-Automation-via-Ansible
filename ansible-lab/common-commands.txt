@@ -1,0 +1,19 @@
+snmpwalk -v3 -l authPriv -u yourv3user \
+  -a SHA -A authpassword123 \
+  -x AES -X privpassword456 \
+  ubuntu-vm system
+
+snmpwalk -v3 -l authPriv -u yourv3user \
+  -a SHA -A authpassword123 \
+  -x AES -X privpassword456 \
+  suse-vm system
+
+snmpwalk -v3 -l authPriv -u yourv3user \
+  -a SHA -A authpassword123 \
+  -x AES -X privpassword456 \
+  rhel-vm system
+
+
+ssh-keygen -f "/home/student/.ssh/known_hosts" -R "suse-vm"
+ssh-keygen -f "/home/student/.ssh/known_hosts" -R "rhel-vm"
+ssh-keygen -f "/home/student/.ssh/known_hosts" -R "ubuntu-vm"

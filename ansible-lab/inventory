@@ -1,0 +1,9 @@
+[suse_vms]
+suse01 ansible_host=10.0.2.57
+
+# BEGIN ANSIBLE MANAGED AZURE VMS
+[azure_vms]
+ubuntu-vm ansible_host=20.198.92.44
+rhel-vm ansible_host=20.204.21.10
+suse-vm ansible_host=20.198.94.143
+# END ANSIBLE MANAGED AZURE VMS

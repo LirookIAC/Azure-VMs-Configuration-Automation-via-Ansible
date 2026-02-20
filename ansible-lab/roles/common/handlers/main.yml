@@ -1,0 +1,11 @@
+---
+- name: Restart snmpd
+  ansible.builtin.service:
+    name: snmpd
+    state: restarted
+
+- name: Restart ssh
+  ansible.builtin.service:
+    name: "{{ ssh_service_name }}"
+    state: restarted
+# handlers file for roles/common
