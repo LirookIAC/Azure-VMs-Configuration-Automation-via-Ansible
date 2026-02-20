@@ -1,6 +1,6 @@
 # Ansible Configuration Management Lab
 
-This directory contains the Ansible playbooks and roles used to configure the three Azure Virtual Machines provisioned by Terraform. 
+This directory contains the Ansible playbooks and roles used to configure the three Azure Linux Virtual Machines accross flavours (Debian , SUSE and RedHat) provisioned by Terraform. 
 
 
 ## What This Code Does
@@ -59,13 +59,13 @@ sudo dnf install ansible -y
 ```
 
 ### 2. Generate SSH Keys
-Ansible requires passwordless SSH access to the target nodes. Generate an SSH keypair on your control node:
+Ansible requires passwordless SSH access to the target nodes. Generate an SSH keypair on your control node. Run below command and press enter to accept defaults:
 
 ```bash
-ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/id_rsa
+ssh-keygen 
 ```
 
-*Note: The public key (`~/.ssh/id_rsa.pub`) generated here must be passed into the Terraform `cloud-init.yaml` during the initial infrastructure provisioning so it gets injected into the Azure VMs.*
+*Note: The public key (`~/.ssh/id_rsa.pub`) generated here must be passed into the Terraform `cloud-init.yaml` during the initial infrastructure provisioning so it gets injected into the Azure VMs.The idea here is to use SSH keys to authenticate seamlessly to all VMs.To do this  "private_key_file = $HOME/.ssh/id_rsa" is mentioned in your ansible.cfg.*
 
 ### 3. Install Required Ansible Collections
 This code relies on community and posix modules for firewall and system management. Install them using Ansible Galaxy:
@@ -77,7 +77,7 @@ ansible-galaxy collection install ansible.posix community.general
 ## Secrets Management
 Passwords (such as the `azadmin` hash, and SNMP `auth_pass`/`priv_pass`) are **not** stored in plaintext. They are passed into the playbook via an encrypted Ansible Vault file located at `./vars/secrets.yml`. 
 
-When running the main configuration playbook, you will be prompted for the vault password to decrypt these variables in memory.
+When running the main configuration playbook, you will be prompted for the vault password to decrypt these variables in memory.The password is 'password'. Use ansible-vault to decrypt and view this file.Ideally you should create this yourself using ansible-vault.
 
 ## Deployment Instructions
 
