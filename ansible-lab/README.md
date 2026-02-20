@@ -39,6 +39,7 @@ ansible-lab/
             ├── RedHat.yml     # RHEL/Rocky specific variables
             ├── Suse.yml       # SLES specific variables
             └── main.yml
+```
 ## Prerequisites: Control Node Setup
 
 To run these playbooks, you must have a separate Linux machine acting as your **Ansible Control Node**. 
@@ -50,6 +51,7 @@ On your dedicated control node, install Ansible:
 ```bash
 sudo apt update && sudo apt install ansible -y
 ```
+
 **For RHEL/Rocky:**
 ```bash
 sudo dnf install epel-release -y
