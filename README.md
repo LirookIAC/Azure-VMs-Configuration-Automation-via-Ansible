@@ -17,6 +17,7 @@ This repository is designed specifically as a **demonstration and lab project**.
 * **Authentication & Secrets:** For this lab, plaintext passwords are used within the configuration files to quickly bootstrap the environment. In a real-world production scenario, secrets would be securely fetched and managed using **Azure Key Vault**.
 * **Code Structure:** The Terraform code is kept relatively flat and straightforward for readability. In a production environment, the infrastructure would be deployed using modularized Terraform structures with strict variable formatting and validation.
 * **Network Access:** The Virtual Machines in this deployment are assigned **Public IPs** for direct, easy access over SSH during the demonstration. In a true enterprise setup, public IPs would be strictly prohibited, and access would be routed privately via Azure Bastion, VPN gateways, or ExpressRoute.
+* **Images :** The images used for SUSE and Ubuntu are official Azure Marketplace Images which are free and for RHEL a third party publisher Rocky Linux 9 image is used. Refer code for more details.
 
 ## Repository Structure
 
