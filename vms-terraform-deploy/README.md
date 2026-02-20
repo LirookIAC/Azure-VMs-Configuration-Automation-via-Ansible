@@ -32,3 +32,35 @@ Before running this code, ensure you have the following installed:
 First, log in to your Azure account using the CLI:
 ```bash
 az login
+
+
+### 2. Set Your Subscription Context
+Ensure you are operating within the correct Azure subscription (this should match the `subscription_id` defined in your `provider.tf`):
+```bash
+az account set --subscription "bed9c8b2-bb60-492d-92a9-d1641fb7adf8"
+```
+
+### 3. Initialize Terraform
+Download the necessary Azure provider plugins:
+```bash
+terraform init
+```
+
+### 4. Review the Execution Plan
+Verify what resources Terraform is going to create:
+```bash
+terraform plan
+```
+
+### 5. Deploy the Infrastructure
+Apply the configuration to build the resources in Azure. You will need to type `yes` to confirm:
+```bash
+terraform apply
+```
+*(Note: You can use `terraform apply -auto-approve` to skip the confirmation prompt).*
+
+### 6. Clean Up (Optional)
+When you are done with the lab and want to avoid further Azure billing, destroy the resources:
+```bash
+terraform destroy
+```
