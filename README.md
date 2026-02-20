@@ -40,3 +40,17 @@ This directory houses the Ansible playbooks and roles used to configure the fres
 * **Infrastructure as Code:** Terraform
 * **Configuration Management:** Ansible
 * **Operating Systems:** Ubuntu/Debian, SLES (SUSE), RHEL (RedHat)
+
+## 💡 Skills Demonstrated
+This project serves as a practical demonstration of several core Cloud Engineering and DevOps competencies:
+* **Infrastructure as Code (IaC):** Automating the repeatable provisioning of Azure networking and compute resources using Terraform.
+* **Cross-Platform Configuration Management:** Designing idempotent, OS-agnostic Ansible roles that dynamically adapt to Debian, RHEL, and SUSE architectures using `ansible_os_family`.
+* **Dynamic Inventory Handling:** Bridging the gap between infrastructure deployment and configuration management by dynamically injecting Terraform outputs (IPs) into Ansible inventories.
+* **Security & Access Management:** Implementing encrypted secrets management via Ansible Vault, configuring custom firewalls (`ufw`/`firewalld`), and automating secure "breakglass" user access.
+
+## 🚀 Future Enhancements (Roadmap)
+While this repository establishes a solid baseline, the following enhancements are planned to expand its functionality and mirror a true enterprise-grade environment:
+* **Role Expansion:** Developing and integrating dedicated Ansible roles for **Database (DB)** deployment, **Web Server** configuration, and **LVM disk management** to build on top of the existing `common` role.
+* **Enterprise Secrets Management:** Migrating away from Ansible Vault and plaintext configurations to dynamically fetch credentials and SSH keys directly from **Azure Key Vault**.
+* **Remote State Management:** Transitioning the Terraform state from local storage to an **Azure Blob Storage** remote backend to support team collaboration and state locking.
+* **Network Hardening:** Replacing Public IPs with private networking and routing access strictly through Azure Bastion or a VPN Gateway.
