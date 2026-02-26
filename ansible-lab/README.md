@@ -18,27 +18,37 @@ Specifically, this automation:
 ```text
 ansible-lab/
 ├── ansible.cfg                # Ansible configuration file
-├── inventory                  # Dynamic inventory file (updated via playbook)
+├── inventory                  # Dynamic inventory file
 ├── local-host.yml             # Playbook to update local hosts/inventory IPs
 ├── initial-config.yml         # Main playbook applying the 'common' role
 ├── common-commands.txt        # Reference commands
 ├── vars/
-│   └── secrets.yml            # Ansible Vault encrypted file for passwords
+│   └── secrets.yml            # Ansible Vault encrypted file
 └── roles/
-    └── common/
-        ├── defaults/
-        ├── files/
-        ├── handlers/
-        │   └── main.yml       # Service restart handlers (snmpd, sshd)
+    ├── common/                # Existing configuration role
+    │   ├── defaults/
+    │   ├── files/
+    │   ├── handlers/
+    │   │   └── main.yml
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   ├── templates/
+    │   │   └── motd.j2
+    │   └── vars/
+    │       ├── Debian.yml
+    │       ├── RedHat.yml
+    │       └── main.yml
+    └── common-lvm/            # New LVM automation role
+        ├── defaults/          # Default variables for VG/LV names
+        ├── files/             # Static files (if any)
+        ├── handlers/          # Handlers for mounting/unmounting
+        ├── meta/              # Role metadata and dependencies
         ├── tasks/
-        │   └── main.yml       # Primary configuration logic
-        ├── templates/
-        │   └── motd.j2        # Jinja2 template for Message of the Day
-        └── vars/
-            ├── Debian.yml     # Ubuntu/Debian specific variables
-            ├── RedHat.yml     # RHEL/Rocky specific variables
-            ├── Suse.yml       # SLES specific variables
-            └── main.yml
+        │   └── main.yml       # LVM, Filesystem, and Mount logic
+        ├── templates/         # Jinja2 templates (e.g., fstab snippets)
+        ├── tests/             # CI/CD test playbooks
+        ├── vars/              # High-priority role variables
+        └── README.md          # Documentation for this specific role
 ```
 ## Prerequisites: Control Node Setup
 
