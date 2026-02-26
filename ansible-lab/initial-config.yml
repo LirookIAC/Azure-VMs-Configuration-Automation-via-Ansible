@@ -1,8 +1,18 @@
 - name: Initial Configuration
   hosts: azure_vms
   become: yes
+  vars:
+    lvm_vg: "my_vg"
+    lvm_lv: "my_lv"
+    lvm_size: "+100%FREE"
+    fstype: "ext4"
+    lvm_pvs: 
+      - "/dev/sdd"
+      - "/dev/sdc"
+    mount_point: "/apps"
   vars_files:
     - ./vars/secrets.yml
   
   roles:
     - common
+    - common-lvm
