@@ -4,15 +4,21 @@ This directory contains the Ansible playbooks and roles used to configure the th
 
 
 ## What This Code Does
-This setup uses a primary `common` role to dynamically apply standard configurations across Debian, RHEL, and SUSE distributions. 
 
-Specifically, this automation:
-1. **Dynamic Inventory Management:** The `local-host.yml` playbook runs locally to automatically update the control node's `/etc/hosts` file and the Ansible `inventory` file with the dynamic Azure Public IPs.
-2. **OS-Specific Variable Loading:** Dynamically loads variables (like package names and config paths) based on the target OS family (`Debian.yml`, `RedHat.yml`, `Suse.yml`).
-3. **System Standardization:** Deploys a custom MOTD (Message of the Day) and standardizes the bash prompt (`PS1`) for all users.
-4. **Breakglass User Management:** Creates an `azadmin` user with an encrypted password and configures passwordless sudo access.
-5. **Firewall Configuration:** Automatically detects the OS and opens UDP Port 161 using the native firewall tool (`ufw` for Debian, `firewalld` for RHEL/SUSE).
-6. **SNMPv3 Setup:** Installs SNMP packages, safely stops the service, checks for existing users, creates an SNMPv3 user (with auth/priv credentials), removes default read-write users, and restarts the service using handlers.
+This setup uses a primary `common` role to dynamically apply standard configurations across Debian, RHEL, and SUSE distributions. Specifically, this automation handles:
+
+* ** Inventory Management:** The `local-host.yml` playbook runs locally to automatically update the control node's `/etc/hosts` file and the Ansible `inventory` file with the dynamic Azure Public IPs.
+* **OS-Specific Variable Loading:** Dynamically loads variables (like package names and config paths) based on the target OS family (`Debian.yml`, `RedHat.yml`, `Suse.yml`).
+* **System Standardization:** Deploys a custom MOTD (Message of the Day) and standardizes the bash prompt (PS1) for all users.
+* **Breakglass User Management:** Creates an `azadmin` user with an encrypted password and configures passwordless sudo access.
+* **Firewall Configuration:** Automatically detects the OS and opens UDP Port 161 using the native firewall tool (`ufw` for Debian, `firewalld` for RHEL/SUSE).
+* **SNMPv3 Setup:** Installs SNMP packages, safely stops the service, checks for existing users, creates an SNMPv3 user (with auth/priv credentials), removes default read-write users, and restarts the service using handlers.
+* **Automatic FS Setup:** Install necessay LVM File Systems and mount them persistently.
+
+### Role Breakdown
+
+* **`common`**: Handles the baseline configuration, system standardization, security hardening, user management, and SNMPv3 setup across all target distributions.
+* **`common-lvm`**: Automates the complete storage management lifecycle, including the creation of Volume Groups (VG) and Logical Volumes (LV), filesystem formatting, and configuring persistent mount points.
 
 ## Directory Structure
 ```text
