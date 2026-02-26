@@ -7,7 +7,7 @@ This directory contains the Ansible playbooks and roles used to configure the th
 
 This setup uses a primary `common` role to dynamically apply standard configurations across Debian, RHEL, and SUSE distributions. Specifically, this automation handles:
 
-* ** Inventory Management:** The `local-host.yml` playbook runs locally to automatically update the control node's `/etc/hosts` file and the Ansible `inventory` file with the dynamic Azure Public IPs.
+* **Inventory Automate:** The `local-host.yml` playbook runs locally to automatically update the control node's `/etc/hosts` file and the Ansible `inventory` file with the dynamic Azure Public IPs.
 * **OS-Specific Variable Loading:** Dynamically loads variables (like package names and config paths) based on the target OS family (`Debian.yml`, `RedHat.yml`, `Suse.yml`).
 * **System Standardization:** Deploys a custom MOTD (Message of the Day) and standardizes the bash prompt (PS1) for all users.
 * **Breakglass User Management:** Creates an `azadmin` user with an encrypted password and configures passwordless sudo access.
