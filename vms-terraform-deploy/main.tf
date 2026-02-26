@@ -128,6 +128,41 @@ resource "azurerm_network_security_group" "example" {
     destination_address_prefix = "*"
   }
 }
+resource "azurerm_managed_disk" "example1" {
+  for_each = { for k, v in var.vms : k => v if v.data_disk_enabled }
+  name                = "${each.value.name}-data-disk1"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  storage_account_type = "Standard_LRS"
+  disk_size_gb        = 10
+  create_option       = "Empty"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "example1" {
+  for_each = { for k, v in var.vms : k => v if v.data_disk_enabled }
+  managed_disk_id    = azurerm_managed_disk.example1[each.key].id
+  virtual_machine_id = azurerm_linux_virtual_machine.example[each.key].id
+  lun                = 10
+  caching            = "ReadWrite"
+}
+
+resource "azurerm_managed_disk" "example2" {
+  for_each = { for k, v in var.vms : k => v if v.data_disk_enabled }
+  name                = "${each.value.name}-data-disk2"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  storage_account_type = "Standard_LRS"
+  disk_size_gb        = 10
+  create_option       = "Empty"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "example2" {
+  for_each = { for k, v in var.vms : k => v if v.data_disk_enabled }
+  managed_disk_id    = azurerm_managed_disk.example2[each.key].id
+  virtual_machine_id = azurerm_linux_virtual_machine.example[each.key].id
+  lun                = 11
+  caching            = "ReadWrite"
+}
 
 output "VMs" {
   value = {
