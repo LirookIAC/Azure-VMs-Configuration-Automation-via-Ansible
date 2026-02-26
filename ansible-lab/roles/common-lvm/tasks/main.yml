@@ -1,0 +1,30 @@
+---
+# tasks file for common-lvm
+- name: Create a volume group
+  community.general.lvg:
+    vg: "{{ lvm_vg }}"
+    pvs: "{{ lvm_pvs }}"
+
+- name: Create a logical volume
+  community.general.lvol:
+    vg: "{{ lvm_vg }}"
+    lv: "{{ lvm_lv }}"
+    size: "{{ lvm_size }}"
+
+- name: Create a  filesystem
+  community.general.filesystem:
+    fstype: "{{ fstype }}"
+    dev: "/dev/{{ lvm_vg }}/{{ lvm_lv }}"
+
+- name: Create a mount point
+  file:
+    path: "{{ mount_point }}"
+    state: directory
+
+- name: Mount the logical volume
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "/dev/{{ lvm_vg }}/{{ lvm_lv }}"
+    fstype: "{{ fstype }}"
+    opts: defaults
+    state: mounted
